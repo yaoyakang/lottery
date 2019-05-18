@@ -5,7 +5,14 @@
 		<meta charset="UTF-8">
 		<title></title>
 	</head>
-
+<style>
+	body,html{
+	font-size:16px;
+		color:#333;
+	}
+	
+	
+	</style>
 	<body>
 		<div id="moAccel"></div>
     <div id="moCalcTiltLR"></div>
@@ -41,6 +48,7 @@ var tiltLR = Math.round(((acceleration.x) / 9.81) * -90);
 var tiltFB = Math.round(((acceleration.y + 9.81) / 9.81) * 90 * facingUp);
 // 打印加速度的计算结果
 document.getElementById("moAccel").innerHTML = rawAcceleration;
+	
 document.getElementById("moCalcTiltLR").innerHTML = tiltLR;
 document.getElementById("moCalcTiltFB").innerHTML = tiltFB;
 // 将2D和3D的转换应用到图片上
