@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="author" content="yyk,15934524011@163.com">
+    <meta name="revised" content="yyk, 2019">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta http-equiv="refresh" content="35"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!--<script src="js/jquery-3.4.1.min.js"></script>-->
+    <script type="text/javascript">
+        function setRem() {
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth / 10 + 'px';
+        }
+
+        setRem();
+    </script>
+    <link rel="stylesheet" href="css/zjd.css">
+</head>
+<body>
+<div class="play">
+    <div class="egg-list" num="0">
+            <img src="images/zjd/egg.png" class="goldegg" status="true">
+            <img src="images/zjd/egg.png" class="goldegg" status="true">
+            <img src="images/zjd/egg.png" class="goldegg" status="true">
+        <img src="images/zjd/egg.png" class="goldegg" status="true">
+        <img src="images/zjd/egg.png" class="goldegg" status="true">
+        <img src="images/zjd/egg.png" class="goldegg" status="true">
+    </div>
+    <img src="images/zjd/hammer.png" alt="" id="hammer" class="shak">
+    <p class="tips">您今日还有 <span id="change"> 3 </span> 次抽奖机会</p>
+</div>
+<script>
+    var $hammer = $("#hammer"),
+        $eggList = $(".egg-list"),//金蛋父级
+        $egg = $(".goldegg"),//金蛋
+        $change = $("#change"),//剩余次数
+        length = $egg.length,
+        data = {count: $change.html()},//次数
+        arr = [],
+        rem = 75,
+        time=setInterval(jump,1000);
+    function jump() {
+        var num=parseInt($eggList.attr("num"));
+        num++;
+        if(num == length){
+            num =0;
+        }
+        $eggList.attr("num",num);
+        $egg.removeClass("jump").eq(num).addClass("jump")
+    }
+    function eggChange(i) {
+        //砸蛋次数的变化
+        clearInterval(time)
+        $egg.removeClass("jump")
+        data.count--;
+        $change.html(data.count);
+        $hammer.removeClass("shak");//清除锤子晃动动画
+        //锤子砸蛋的位置
+        (i === 0 || i === 3 || i === 6) && ($hammer.css("left", 165 / rem + "rem"));
+        (i === 1 || i === 4 || i === 7) && ($hammer.css("left", 415 / rem + "rem"));
+        (i === 2 || i === 5 || i === 8) && ($hammer.css("left", 665 / rem + "rem"));
+        (i === 0 || i === 1 || i === 2) && ($hammer.css("top", 60 / rem + "rem"));
+        (i === 3 | i === 4 || i === 5) && ($hammer.css("top", 280 / rem + "rem"));
+        (i === 6 | i === 7 || i === 8) && ($hammer.css("top", 500 / rem + "rem"));
+        //锤子返回
+        setTimeout(function () {
+            $hammer.css("left", 665 / rem + "rem");
+            $hammer.css("top", 60 / rem + "rem");
+        }, 1500);
+
+        //金蛋破裂及锤子动画
+        setTimeout(function () {
+            $hammer.addClass("hit");
+            $egg.eq(i).prop("src", "images/zjd/egg_start1.png");
+            setTimeout(function () {
+                $egg.eq(i).prop("src", "images/zjd/egg_start1.png");
+            }, 300);
+            setTimeout(function () {
+                $egg.eq(i).prop("src", "images/zjd/egg_open.png");
+                $egg.eq(i).removeClass("init");
+                //clickData(false);//ajax回调
+                $hammer.removeClass("hit");//清除锤子砸蛋动画
+                $hammer.addClass("shak");
+                //判断中奖还是未中奖
+                if($eggList.eq(i).find("em").text()=="谢谢参与"){
+                    alert("啥都没有")
+                }
+                else{
+                    alert("逗你玩")
+                }
+
+                //记录被砸开的蛋
+                arr.push(i);//存入每个砸开蛋的下标
+                console.log(arr)
+            }, 600);
+        }, 600);
+        $egg.eq(i).attr("status", false);//更改金蛋状态为已砸开
+        time=setInterval(jump,1000)
+    }
+    $egg.click(function () {
+        var index= $(this).index()
+        if(data.count <= 0){
+            alert("您今天的机会已用完")
+            return false;
+        }
+        if($(this).attr("status") == "true"){
+            eggChange(index)
+        }else{
+            alert("您已经砸过")
+        }
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="author" content="yyk,15934524011@163.com">
+    <meta name="revised" content="yyk, 2019">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta http-equiv="refresh" content="35"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        function setRem() {
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth / 10 + 'px';
+        }
+
+        setRem();
+    </script>
+    <link rel="stylesheet" href="css/ggk.css">
+</head>
+<body>
+<div class="panel">
+    <div id="canvas-prize">
+        <h5>恭喜您！</h5>
+        <p>我爱你呀</p>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="canvas-mask">
+        <a id="btn" href="javascript:;">开始刮奖吧</a>
+        <p>您今日还有<span id="change">3</span> 次机会哦~</p>
+    </div>
+    <ul class="top">
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+    </ul>
+    <ul class="bottom">
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+    </ul>
+</div>
+<script>
+    $(function () {
+        var $canvas = $("#canvas"),//canvas
+            clientWidth = document.documentElement.clientWidth,
+            canvasWidth = Math.floor(clientWidth * 555 / 750),//canvas宽 = 屏幕宽 * 设计稿里canvas宽 / 750
+            canvasHeight = Math.floor(clientWidth * 190 / 750),//canvas高 = 屏幕宽 * 设计稿里canvas高 / 750
+            ctx = $canvas[0].getContext("2d"),//获取canvas的2d绘制对象
+            $canvasMask = $("#canvas-mask"),//canvas遮罩层
+            $btn = $("#btn"),//刮奖按钮
+            $change = $("#change"),//剩余次数
+            data = {count: $change.html()},//次数
+            empty = false,
+            bool = false;//判断是否按下去，true为按下，false未按下
+
+        //canvas初始化
+        function init() {
+            $canvasMask.show();
+            $change.html(data.count);//显示剩余次数
+            //设置canvas宽高
+            $canvas.attr('width', canvasWidth);
+            $canvas.attr('height', canvasHeight);
+            //canvas绘图
+            ctx.beginPath();
+            ctx.fillStyle = '#e2e2e2';//刮刮乐图层的填充色
+            ctx.lineCap = "round";//绘制的线结束时为圆形
+            ctx.lineJoin = "round";//当两条线交汇时创建圆形边角
+            ctx.lineWidth = 20;//单次刮开面积
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.closePath();
+
+            ctx.globalCompositeOperation = 'destination-out';//新图像和原图像重合部分变透明
+            //下面3行代码是为了修复部分手机浏览器不支持destination-out
+            $canvas.css("display", "none");
+            $canvas.outerHeight();
+            $canvas.css("display", "inherit");
+        }
+        init();
+        //点击开始刮奖按钮
+        $btn.click(function () {
+            if (data.count > 0) {
+                data.count--;//设定中奖的图片
+                //$canvas.css("background-image", "url('images/prize2.png')");
+                $canvasMask.hide();
+                empty = false;
+            } else {
+                alert("没有次数了");
+            }
+        });
+
+        /*canvas事件*/
+        //pc端
+        $canvas.on({
+            //鼠标按下
+            mousedown: function (e) {
+                e = e || window.event;
+                e.preventDefault();
+                bool = true;
+                var x = e.pageX - $(this).offset().left,//鼠标距离该页面left的值 - 元素左侧距离文档的left
+                    y = e.pageY - $(this).offset().top;
+                ctx.moveTo(x, y);
+
+                //鼠标移动
+                $canvas.on('mousemove', function (e) {
+                    if (bool) {
+                        var x = e.pageX - $(this).offset().left;
+                        var y = e.pageY - $(this).offset().top;
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                        clear();
+                    }
+                });
+            },
+            //鼠标按键抬起
+            mouseup: function () {
+                bool = false;
+            }
+        });
+
+        //移动端
+        $canvas.on("touchstart", function (e) {
+            e = e || window.event;
+            e.preventDefault();
+            if (typeof e.touches !== 'undefined') {
+                e = e.touches[0];//获取触点
+            }
+            /* jquery 3.x
+            var x = e.pageX - $(this).offset().left,
+                y = e.pageY - $(this).offset().top;
+            */
+
+            //jquery 2.x
+            var x = e.originalEvent.targetTouches[0].pageX - $(this).offset().left,
+                y = e.originalEvent.targetTouches[0].pageY - $(this).offset().top;
+            ctx.moveTo(x, y);
+            //touchmove事件
+            $canvas.on('touchmove', eventMove);
+        });
+
+        //移动事件
+        function eventMove(e) {
+            e = e || window.event;
+            e.preventDefault();
+            if (typeof e.touches !== 'undefined') {
+                e = e.touches[0];
+            }
+            /* jquery 3.x
+            var x = e.pageX - $(this).offset().left,
+                y = e.pageY - $(this).offset().top;
+            */
+
+            //jquery 2.x
+            var x = e.originalEvent.targetTouches[0].pageX - $(this).offset().left,
+                y = e.originalEvent.targetTouches[0].pageY - $(this).offset().top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            clear();
+        }
+
+        //清除画布
+        function clear() {
+            // console.log(111)
+            if (empty) return;
+            var data = ctx.getImageData(0, 0, canvasWidth, canvasHeight).data,//得到canvas的全部数据
+                half = 0;
+
+            //length = canvasWidth * canvasHeight * 4，一个像素块是一个对象rgba四个值，a范围为0~255
+            for (var i = 3, length = data.length; i < length; i += 4) {//因为有rgba四个值，下标0开始，所以初始i=3
+                data[i] === 0 && half++;//存在imageData对象时half加1  PS:该像素区域透明即为不存在该对象
+            }
+            //当刮开的区域大于等于30%时，则可以开始处理结果
+            if (half >= canvasWidth * canvasHeight * 0.4) {
+                if($("#canvas-prize p").html()=="谢谢参与"){
+                    console.log($("#canvas-prize p").html())
+                }else{
+
+                    console.log($("#canvas-prize p").html())
+                }
+                if($change.html()>0){
+//                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);//清空画布
+                    empty = true;
+                    init()
+
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="author" content="yyk,15934524011@163.com">
+    <meta name="revised" content="yyk, 2019">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery.rotate.js"></script>
+    <script type="text/javascript">
+        function setRem() {
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth / 10 + 'px';
+        }
+
+        setRem();
+    </script>
+    <link rel="stylesheet" href="css/dzp.css">
+</head>
+<body>
+<div class="rotate">
+    <!--running-->
+        <ul class="prize ring">
+            <li>
+                <span></span>
+                <p>1</p>
+                <img src="images/dzp/dzp1.png">
+            </li>
+            <li>
+                <span></span>
+                <p>2</p>
+                <img src="images/dzp/dzp2.png">
+            </li>
+            <li>
+                <span></span>
+                <p>3</p>
+                <img src="images/dzp/dzp3.png">
+            </li>
+            <li>
+                <span></span>
+                <p>4</p>
+                <img src="images/dzp/dzp1.png">
+            </li>
+            <li>
+                <span></span>
+                <p>5</p>
+                <img src="images/dzp/dzp2.png">
+            </li>
+            <li>
+                <span></span>
+                <p>6</p>
+                <img src="images/dzp/dzp3.png">
+            </li>
+        </ul>
+        <img src="images/dzp/dzpbg.gif" width="100%" class="bg">
+    <img src="images/dzp/playbtn.png" alt="" id="btn">
+</div>
+<script>
+
+    $(function () {
+        var tips = ["超级豪华大礼", "50元现金红包", "20元现金红包" , "谢谢参与~","100元现金红包", "谢谢参与~"],//中奖提示
+            // tips =[],
+            $ring = $(".ring"),
+            $prize = $(".prize"),//转盘
+            $btn = $("#btn"),//按钮
+            $change = $("#change"),//显示剩余抽奖机会
+            data = 3,//次数
+            bool = false,//判断是否在旋转，true表示是，false表示否
+            timer;//定时器
+        init();
+        function init() {//初始化初始化初始化
+            //把页面奖项存入数组tips
+            $(".prize li").each(function(index, element) {
+                tips.push($(this).find("p").text());
+            });
+            //定时器
+            timer = setInterval(function () {
+                $ring.toggleClass("light");
+            }, 1000);
+            //
+        }
+
+        //大转盘奖品角度偏移计算
+        var prizeNum=$(".prize li").length;//计算奖项个数
+        var angleThis=360/prizeNum;
+        $(".prize li").each(function() {
+            var index=$(this).index();
+            $(this).css("transform","rotate("+(index*angleThis)+"deg)");
+            $(this).find("span").css("transform","rotate("+(angleThis/2)+"deg) skewY("+(90-angleThis)+"deg)");
+        });
+
+        //点击抽奖
+        $btn.click(function () {
+            if (bool) return; // 如果在执行就退出
+            bool = true; // 标志为 在执行
+            if (data.count <= 0) { //当抽奖次数为0时
+                $change.html(0);//次数显示为0
+                bool = false;
+                alert("没有次数了");
+            } else { //还有次数就执行
+                data.count--;
+                data.count <= 0 && (data.count = 0);
+                $change.html(data.count);//显示剩余次数
+                $prize.removeClass("running");
+                clickFn();
+            }
+        });
+
+        //随机概率
+        function clickFn() {
+            var data = [1, 2, 3, 4, 5, 6];//抽奖概率
+            //data为随机出来的结果，根据概率后的结果
+            // data = data[Math.floor(Math.random() * data.length)];//1-6的随机数
+            data=4;
+            switch (data) {//中奖概率，可控。根据得到的随机数控制奖品
+                case 1:
+                    rotateFn(1, 0, tips[0]);
+                    break;
+                case 2:
+                    rotateFn(2, angleThis*(prizeNum-1), tips[1]);
+                    break;
+                case 3:
+                    rotateFn(3, angleThis*(prizeNum-2), tips[2]);
+                    break;
+                case 4:
+                    rotateFn(4, angleThis*(prizeNum-3), tips[3]);
+                    break;
+                case 5:
+                    rotateFn(5, angleThis*(prizeNum-4), tips[4]);
+                    break;
+                case 6:
+                    rotateFn(6, angleThis*(prizeNum-5), tips[5]);
+                    break;
+            }
+        }
+
+        //选中函数。参数：奖品序号、角度、提示文字
+        function rotateFn(awards, angle, text) {
+            bool = true;
+            $prize.stopRotate();
+            $prize.rotate({
+                angle: 0,//旋转的角度数
+                duration: 4000, //旋转时间
+                animateTo: angle + 1440, //给定的角度,让它根据得出来的结果加上1440度旋转。也就是至少转4圈
+                callback: function () {
+                    bool = false; // 标志为 执行完毕
+                    if(text=="谢谢参与"){
+                        fail();
+                    }else{
+                        alert(text)
+                    }
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

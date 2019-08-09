@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="author" content="yyk,15934524011@163.com">
+    <meta name="revised" content="yyk, 2019">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta http-equiv="refresh" content="135"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        function setRem() {
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            html.style.fontSize = hWidth / 10 + 'px';
+        }
+
+        setRem();
+    </script>
+    <link rel="stylesheet" href="css/jgg.css">
+</head>
+<body>
+<!--游戏区域-->
+<div class="main">
+    <img src="images/jgg/jjgbg.gif" alt="" class="bg">
+    <p class="num">还剩<span id="change">100</span> 次机会哦~</p>
+    <!--九宫格-->
+    <ul class="play">
+        <li class="prize">
+            <img src="images/jgg/jgg1.png">
+            <p>服务</p>
+        </li>
+        <li class="prize select">
+            <img src="images/jgg/jgg3.png">
+            <p>优惠卷</p>
+        </li>
+        <li class="prize">
+            <img src="images/jgg/jgg4.png">
+            <p>谢谢参与</p>
+        </li>
+        <li class="prize">
+            <img src="images/jgg/jgg2.png">
+            <p>实物</p>
+        </li>
+        <!--开始按钮-->
+        <li id="btn"><img src="images/jgg/jggce.png"></li>
+        <!--开始按钮-->
+        <li class="prize">
+        <img src="images/jgg/jgg3.png">
+        <p>优惠卷</p>
+        </li>
+        <li class="prize">
+            <img src="images/jgg/jgg2.png">
+            <p>实物</p>
+        </li>
+        <li class="prize">
+            <img src="images/jgg/jgg1.png">
+            <p>服务</p>
+        </li>
+        <li class="prize">
+            <img src="images/jgg/jgg4.png">
+            <p>谢谢参与</p>
+        </li>
+    </ul>
+</div>
+<script>
+    $(function () {
+           var $prize = $(".play li").not("#btn"),//含谢谢参与的所有奖品
+            $change = $("#change"),//显示剩余机会
+            $btn = $("#btn"),//开始抽奖按钮
+            length = $prize.length,//奖品总数
+            data = {count: $change.html()},//次数
+            bool = true,//判断是否可点击,true为可点击
+            mark = 0,//标记当前位置，区间为0-7
+            timer;//定时器
+        //默认动画效果
+        function init() {
+            timer = setInterval(function () {
+                //不能调用animate函数，不然标记会有问题
+                //九宫格动画
+                length++;
+                length %= 8;
+                $prize.eq(length - 1).removeClass("select");
+                $prize.eq(length).addClass("select");
+
+                //位置标记的改变
+                mark++;
+                mark %= 8;
+            }, 1000);
+        }
+        init();
+
+        //点击抽奖
+        $btn.click(function () {
+            if (bool) {//若未按下
+                bool = false;
+                if (data.count > 0) {//若还有次数
+                    data.count--;
+                    $change.html(data.count);
+                    clickFn();
+                } else {
+                    alert("您剩余抽奖次数为0，不能抽奖~");
+                }
+            }
+        });
+
+        //点击旋转
+        function clickFn() {
+            clearInterval(timer);//点击抽奖时清除定时器
+            var random = [1, 2, 3, 4, 5, 6, 7, 8];//抽奖概率
+            //data为随机出来的结果，根据概率后的结果
+            random = random[Math.floor(Math.random() * random.length)];//1-8的随机数
+            mark += random;
+            mark %= 8;
+            //控制概率，永远抽不中谢谢参与
+            if (mark === 2) {//抽中第一个谢谢参与则向前一位
+                random++;
+                mark++;
+            }
+            if (mark === 7) {//抽中第二个谢谢参与则向后一位
+                random--;
+                mark--;
+            }
+            //默认先转4圈
+            random += 32;//圈数 * 奖品总数
+            //调用旋转动画
+            for (var i = 1; i <= random; i++) {
+                setTimeout(animate(), 2 * i * i);//第二个值越大，慢速旋转时间越长
+            }
+            //停止旋转动画
+            setTimeout(function () {
+                console.log("中了" + mark);
+                setTimeout(function () {
+                    bool = true;
+                }, 1000);
+            }, 2 * random * random);
+        }
+
+        //动画效果
+        function animate() {
+            return function () {
+                //九宫格动画
+                length++;
+                length %= 8;
+                $prize.eq(length - 1).removeClass("select");
+                $prize.eq(length).addClass("select");
+            }
+        }
+
+        //中奖信息提示
+
+//            clearInterval(timer);//关闭弹出时清除定时器
+//            init();
+
+
+    });
+</script>
+</body>
+</html>

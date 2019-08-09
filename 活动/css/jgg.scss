@@ -1,0 +1,102 @@
+@import "public";
+.main {
+  position: relative;
+  width: torem(650px);
+  height: torem(650px);
+  margin: 0 auto;
+  .bg{
+    position: absolute;
+    width: torem(650px);
+    height: torem(650px);
+    z-index: -1;
+  }
+  .num{
+    position: absolute;
+    top:0;
+    left: 30%;
+    height: torem(32px);
+    width: 40%;
+    text-align: center;
+    font-size: torem(20px);
+    color: #ffffff;
+    line-height: torem(32px);
+    background: #ff6600;
+    border-radius: torem(32px);
+    border:1px solid #333;
+  }
+}
+.play{
+  width: torem(580px);
+  height: torem(560px);
+  display: flex;
+  flex-wrap: wrap;
+  padding: torem(35px) torem(35px) torem(57px) torem(35px);
+  li{
+    width: torem(165px);
+    //height: torem(170px);
+    margin-top: torem(22px);
+    margin-left: torem(22px);
+    &:nth-child(1){
+      order:1;
+    }
+    &:nth-child(2){
+      order:2;
+    }
+    &:nth-child(3){
+      order:3;
+    }
+    &:nth-child(4){
+      order:6;
+    }
+    &:nth-child(5){
+      order:5;
+    }
+    &:nth-child(6){
+      order:9;
+    }
+    &:nth-child(7){
+      order:8;
+    }
+    &:nth-child(8){
+      order:7;
+    }&:nth-child(9){
+       order:4;
+     }
+  }
+  .prize{
+    text-align: center;
+    background: #ffffff;
+    border-radius: torem(12px);
+    box-shadow: inset 0px -9px #e0d9d9;
+    img{
+      margin-top: torem(18px);
+      width: torem(80px);
+      height: torem(80px);
+      vertical-align: middle;
+    }
+    p{
+      font-size: torem(26px);
+      color: #fe4d41;
+    }
+  }
+  .select{
+    background: #fffbd4;
+    box-shadow: inset 0px -9px #e0d9d9;
+  }
+  #btn{
+    cursor: pointer;
+    position: relative;
+    img{
+      position: absolute;
+      top:0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width: torem(165px);
+      height: torem(165px);
+      display: block;
+
+    }
+  }
+}

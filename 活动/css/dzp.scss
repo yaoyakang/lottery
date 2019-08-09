@@ -1,0 +1,103 @@
+@import "public";
+.rotate {
+  position: relative;
+  width: torem(570px);
+  height: torem(580px);
+  margin: 0 auto;
+  font-size: 0;
+  .bg{
+    width: torem(570px);
+    height: torem(570px);
+  }
+  #btn {
+    position: absolute;
+    left: torem(205px);
+    top: torem(205px);
+    width: torem(160px);
+    height: torem(160px);
+    z-index: 5;
+    background-size:  100% 100%;
+  }
+}
+
+@keyframes init {
+  100% {
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.running {
+  -o-animation: init 90s linear infinite;
+  -ms-animation: init 90s linear infinite;
+  -moz-animation: init 90s linear infinite;
+  -webkit-animation: init 90s linear infinite;
+  animation: init 90s linear infinite;
+}
+.prize {
+  overflow: hidden;
+  position: absolute;
+  width: torem(470px);
+  height: torem(470px);
+  margin: torem(50px);
+  border-radius: 50%;
+  li{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50%;
+    font-size: torem(28px);
+    line-height: torem(70px);
+    text-align: center;
+    color: #ff7519;
+    -moz-transform-origin: center bottom;
+    -webkit-transform-origin: center bottom;
+    -o-transform-origin: center bottom;
+    -ms-transform-origin: center bottom;
+    transform-origin: center bottom;
+    &:nth-child(2n+0) span{
+      background: #FFF;
+    }
+  }
+  span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin-left: -50%;
+    //border-right: 2px solid #f44747;
+    -o-transform-origin: right bottom;
+    -ms-transform-origin: right bottom;
+    -moz-transform-origin: right bottom;
+    -webkit-transform-origin: right bottom;
+    transform-origin: right bottom;
+    -o-transform: rotate(30deg) skewY(30deg);
+    -ms-transform: rotate(30deg) skewY(30deg);
+    -moz-transform: rotate(30deg) skewY(30deg);
+    -webkit-transform: rotate(30deg) skewY(30deg);
+    transform: rotate(30deg) skewY(30deg);
+    background: #ffe7cc;
+    z-index: -1;
+  }
+  p {
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    width: 50%; /*height: 60%; padding-top: 0.26666667rem;*/
+    text-align: center;
+    line-height: torem(70px);
+    z-index: 3;
+  }
+  img{
+    display: block;
+    width: 16%;
+    margin: torem(10px) auto;
+    z-index: 3;
+  }
+}
+
